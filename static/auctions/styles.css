@@ -1,0 +1,13 @@
+body {
+    padding: 10px;
+}
+.product_img > img {
+  width: 70%;
+}
+.product_img{
+  width: 200px;
+  text-align: center;
+}
+h2, h1{
+  color: red;
+}
