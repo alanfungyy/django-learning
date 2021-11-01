@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories</h2>
+
+    <!-- Error message, if any -->
+    {% if message %}
+        <div style="background-color:red; color:yellow; border-radius: 20px;" class="container">
+          <h1>Error!</h1>
+          {{ message }}
+        </div>
+    {% endif %}
+
+    {% if categories %}
+      {% for category in categories %}
+        <h4><a href="{% url 'category' category.categories_lower %}">{{ category.categories_lower|capfirst }}</a></h4>
+      {% endfor %}
+    {% endif %}
+
+{% endblock %}

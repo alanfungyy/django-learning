@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Past Listings</h2>
+
+    <!-- Error message, if any -->
+    {% if message %}
+        <div style="background-color:red; color:yellow; border-radius: 20px;" class="container">
+          <h1>Error!</h1>
+          {{ message }}
+        </div>
+    {% endif %}
+
+    {% if listings %}
+      <table class="table">
+        {% for listing in listings %}
+        <tr>
+          {% if listing.url %}
+          <td class="product_img"><a href="{% url 'listing' listing.pk %}"><img src="{{ listing.url }}" alt="{{ listing.description }}"></a></td>
+          {% else %}
+          <td class="product_img"><a href="{% url 'listing' listing.pk %}"><img src="https://preview.redd.it/52pbehnz61161.png?auto=webp&s=a1efd953091a205a3de8285f04248349a11cde4c" alt="Nothing to see here."></a></td>
+          {% endif %}
+          <td>
+            <h3><a href="{% url 'listing' listing.pk %}">{{ listing.title }}</a></h3>
+            <p>{{ listing.description }}</p>
+            <h5>Price: <b>${{ listing.current_price }}</b></h5>
+            <small>{{ listing.datetime_created }}</small>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <h3 style="color:red">No Active Listing!</h3>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+
+    <!-- Error message, if any -->
+    {% if messages %}
+        <div style="background-color:red; color:yellow; border-radius: 20px;" class="container">
+          <h1>Error!</h1>
+          <ul style:>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div> <br>
+    {% endif %}
+
+    {% if user.is_authenticated and is_active %}
+      <div>
+        {% if not in_watchlist %}
+        <!-- Add To Watchlist button -->
+        <form style="display: inline-block" action="{% url 'watchlist' user.username %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" value="{{ user.pk }}">
+          <input type="hidden" name="listing" value="{{ listing.pk }}">
+          <input class="btn btn-primary" type="submit" value="Add To Watchlist">
+        </form>
+        {% else %}
+        <!-- Remove From Watchlist button -->
+        <form style="display: inline-block" action="{% url 'removewatchlist' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" value="{{ user.pk }}">
+          <input type="hidden" name="listing" value="{{ listing.pk }}">
+          <input class="btn btn-primary" type="submit" value="Remove From Watchlist">
+        </form>
+        {% endif %}
+        {% if is_creator %}
+        <!-- Delete listing button -->
+        <form style="display: inline-block" action="{% url 'delete' listing.pk %}" method="post">
+          {% csrf_token %}
+          <input class="btn btn-primary" type="submit" value="Delete Listing">
+        </form>
+        <!-- Close listing -->
+        <form style="display: inline-block" action="{% url 'close' listing.pk %}" method="post">
+          {% csrf_token %}
+          <input class="btn btn-primary" type="submit" value="Close Listing">
+        </form>
+        {% endif %}
+      </div>
+    {% endif%}
+    <br>
+
+    <!-- Listing image -->
+    <div>
+      {% if listing.url %}
+        <img class="image" src="{{ listing.url }}" alt="Product image.">
+      {% else %}
+        <img class="image" src="https://preview.redd.it/52pbehnz61161.png?auto=webp&s=a1efd953091a205a3de8285f04248349a11cde4c" alt="Nothing to see here.">
+      {% endif %}
+    </div>
+
+    <!-- Listing description & current price -->
+    <div>
+      <p>{{ listing.description }}</p>
+      <h3>${{ current_price }}</h3>
+    </div>
+
+    <!-- Bidding form and details -->
+    <div>
+      <small>Number of bid(s) so far = {{ total_bids }}.</small>
+      {% if highest_bidder %}
+        {% if is_active %}
+          <small>Your bid is the current bid.</small>
+        {% else %}
+          <small><b>You won this bid!</b></small>
+        {% endif %}
+      {% endif %}
+      {% if user.is_authenticated and is_active %}
+      <form action="{% url 'bid' listing.pk %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ bidform.as_p }}
+        </div>
+        <input type="hidden" name="user_id" value="{{ user.pk }}">
+        <input class="btn btn-primary" type="submit" value="Place Bid">
+      </form>
+      {% endif %}
+    </div>
+
+    <hr style="border: 1px solid #007BFF">
+
+    <!-- Show listing details -->
+    <div>
+      <h3>Details</h3>
+      <ul>
+        <li>Listed by: <a href="{% url 'user' user %}">{{ listing.user }}</a></li>
+        <li>Category:
+          {% if listing.category %}
+          <a href="{% url 'category' listing.category %}">{{ listing.category|capfirst }}</a>
+          {% else %}
+          None
+          {% endif %}
+        </li>
+        <li>Date listed: {{ listing.datetime_created }}</li>
+      </ul>
+    </div>
+
+    <hr style="border: 1px solid #007BFF">
+
+    <div>
+      <h3>Comments</h3>
+
+      <!-- Show comments, if any -->
+      {% if comments %}
+        {% for comment in comments %}
+          <div>
+            <h5>{{ comment.title }}</h5>
+            <p>{{ comment.comment }}</p>
+            <small><a href="#">{{ comment.user }}</a>, {{ comment.datetime_created }}</small>
+          </div> <hr>
+        {% endfor %}
+      {% else %}
+        <h5>No comments yet</h5>
+      {% endif %}
+
+      <!-- Comment form, for authenticated users -->
+      {% if user.is_authenticated %}
+        <h5>Post Comment</h5>
+        <form action="{% url 'postcomment' listing.pk %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" value="{{ user.pk }}">
+          <input type="hidden" name="listing" value="{{ listing.pk }}">
+          <table>
+            {{ commentform.as_table }}
+          </table>
+          <input class="btn btn-primary" type="submit" value="Post Comment">
+        </form>
+      {% endif %}
+    </div>
+
+{% endblock %}

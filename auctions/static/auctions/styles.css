@@ -1,0 +1,13 @@
+body {
+    padding: 10px;
+}
+.product_img img{
+  max-width: 70%;
+}
+.product_img{
+  width: 30%;
+  text-align: center;
+}
+.image{
+  max-width: 20%;
+}

@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ user.username }}'s Watchlist</h2>
+
+    <!-- Error message, if any -->
+    {% if message %}
+        <div style="background-color:red; color:yellow; border-radius: 20px;" class="container">
+          <h1>Error!</h1>
+          {{ message }}
+        </div>
+    {% endif %}
+
+    <!-- List of items under watchlist -->
+    {% for item in watchlist %}
+    <h4><a href="{% url 'listing' item.listing_id %}">{{ item.listing }}</a></h4>
+    {% endfor %}
+{% endblock %}

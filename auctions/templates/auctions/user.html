@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ user }}'s Page</h2>
+
+    <!-- Error message, if any -->
+    {% if message %}
+        <div style="background-color:red; color:yellow; border-radius: 20px;" class="container">
+          <h1>Error!</h1>
+          {{ message }}
+        </div>
+    {% endif %}
+
+    <h3>Listings</h3>
+    {% if listings %}
+      {% for listing in listings %}
+        <h4><a href="{% url 'listing' listing.pk %}">{{ listing }}</a></h4>
+      {% endfor %} <hr>
+    {% endif %}
+
+    <h3>Won Bid</h3>
+    {% if winning_bids %}
+      {% for bid in winning_bids %}
+        <h4><a href="{% url 'listing' bid.pk %}">{{ bid }}</a></h4>
+      {% endfor %}
+    {% endif %}
+
+{% endblock %}
